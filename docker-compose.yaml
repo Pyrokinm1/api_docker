@@ -1,0 +1,37 @@
+version: "1.2"
+
+services:
+ postgres:
+    image: postgres:latest
+    container_name: postgres
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+     - POSTGRES_PASSWORD=123
+     - POSTGRES_USER=postgres
+     - POSTGRES_DB=postgres
+    networks:
+      - database
+ dart:
+    restart: on-failure
+    container_name: api
+    build: ./
+    environment:
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=123
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=postgres
+      - SECRET_KEY=SECRET_KEY
+    depends_on:
+      - postgres
+    ports:
+      - 8888:8888
+    networks:
+      - database
+volumes:
+  dart_api:
+
+networks:
+  database:
